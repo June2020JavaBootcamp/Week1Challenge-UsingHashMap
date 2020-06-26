@@ -50,7 +50,7 @@ public class BurritosOrder {
         ingredientsWithOption.put("Sour cream", sourCreamOption);
 
         // Generate an order
-        ArrayList<ArrayList<String>> orders = generateRandomOrder(
+        ArrayList<HashMap<Integer, String>> orders = generateRandomOrder(
                 random, ingredientsWithOption, ingredients, NUMBER_OF_NEDDED_ORDER,
                 MIN_NUMBER_OF_INGREDIENTS, MAX_NUMBER_OF_INGREDIENTS);
 
@@ -66,15 +66,15 @@ public class BurritosOrder {
          Each burrito should have a minimum of 5 ingredients and a maximum of 9
          ingredients. Save the finished burritos and display the contents. */
 
-    public static ArrayList<ArrayList<String>> generateRandomOrder
+    public static ArrayList<HashMap<Integer, String>> generateRandomOrder
             (Random random, HashMap<String, String[]> ingredWithOpt, String[] ingredients,
              int NUMBER_OF_NEDDED_ORDER, int MIN_NUMBER_OF_INGREDIENTS, int MAX_NUMBER_OF_INGREDIENTS) {
 
-        ArrayList<ArrayList<String>> orders = new ArrayList<>();
-        ArrayList<HashMap<Integer, String>> currentOrder;
+        //ArrayList<ArrayList<String>> orders = new ArrayList<>();
+        ArrayList<HashMap<Integer, String>> orders;
         HashMap<Integer, String> ingredOptionHash;
         ArrayList<Integer> alreadyUsedIngredients;
-        ArrayList sortedOrderIngredOpt;
+        HashMap<Integer, String> sortedOrderIngredOpt;
         int numberOfOrder = 0;
         String ingredOrKey = "";
         int randomOptionIdx;
@@ -82,16 +82,13 @@ public class BurritosOrder {
         int randomNumberOfIngredients;
         int randomIngredientsOptionIdx;
 
-
+        orders = new ArrayList<HashMap<Integer, String>>();
 
         while (numberOfOrder != NUMBER_OF_NEDDED_ORDER) {
-
-            currentOrder = new ArrayList<HashMap<Integer, String>>();
 
             randomNumberOfIngredients = MIN_NUMBER_OF_INGREDIENTS +
                     random.nextInt(5);
             System.out.println("random Number Of Ingredients: " + randomNumberOfIngredients);
-
 
             alreadyUsedIngredients = new ArrayList<Integer>();
             ingredOptionHash = new HashMap<Integer, String>();
@@ -112,8 +109,6 @@ public class BurritosOrder {
                     ingredOption = ingredWithOpt.get(ingredOrKey)[randomOptionIdx];
 
                     ingredOptionHash.put(randomIngredientsOptionIdx, ingredOption);
-
-                    currentOrder.add(ingredOptionHash);
                 }
             }
             System.out.println();
@@ -127,14 +122,14 @@ public class BurritosOrder {
         return orders;
     }
 
-    public static ArrayList<String> sortOrder(HashMap<Integer, String> currentOrder) {
-        ArrayList<String> sorted = new ArrayList<>();
+    public static HashMap<Integer, String> sortOrder(HashMap<Integer, String> currentOrder) {
+        HashMap<Integer, String> sorted = new HashMap<>();
 
         Object[] keys = currentOrder.keySet().toArray();
         Arrays.sort(keys);
 
         for(Object key : keys) {
-            sorted.add(currentOrder.get(key));
+            sorted.put((int)key, currentOrder.get(key));
         }
 
         return sorted;
@@ -144,18 +139,19 @@ public class BurritosOrder {
              Also, add $0.50 for "all" but for "none" or "no" add $0 .  */
 
 
-     public static double[] calculatePrice(ArrayList<ArrayList<String>> orders, int NUMBER_OF_NEDDED_ORDER) {
+    public static double[] calculatePrice(ArrayList<HashMap<Integer, String>> orders, int NUMBER_OF_NEDDED_ORDER) {
         double[] eachOrderPrices = new double[NUMBER_OF_NEDDED_ORDER];
 
         double BASE_PRICE = 3.0;
         double currentOrderPrice = BASE_PRICE;
         String ingredientOption = "";
         for (int orderIdx=0; orderIdx < orders.size(); orderIdx++) {
-            ArrayList<String> order = orders.get(orderIdx);
+            HashMap<Integer, String> order = orders.get(orderIdx);
 
             currentOrderPrice = BASE_PRICE;
 
-            for(int ingredOptIdx = 0; ingredOptIdx < order.size(); ingredOptIdx++) {
+
+            for (int ingredOptIdx : order.keySet()) {
                 ingredientOption = order.get(ingredOptIdx);
 
                 if (!ingredientOption.equals("none") && !ingredientOption.equals("no")){
@@ -168,9 +164,9 @@ public class BurritosOrder {
     }
 
     // Display order with price
-    public static void displayOrderWithPrice(ArrayList<ArrayList<String>> orders,
+    public static void displayOrderWithPrice(ArrayList<HashMap<Integer, String>> orders,
                                       double[] eachOrderPrices, String[] ingredients) {
-        ArrayList<String> order;
+        HashMap<Integer, String> order;
         int orderNumber;
         String orderString;
 
@@ -191,23 +187,28 @@ public class BurritosOrder {
     }
 
     // Untility Method: It format the order string
-    public static String formatOrderString(ArrayList<String> order, String[] ingredients) {
+    public static String formatOrderString(HashMap<Integer, String> order, String[] ingredients) {
         String orderString = "";
         String option = "";
+        int counter = 0;
 
-        for (int i=0; i < order.size(); i++) {
-            option = order.get(i);
+        for (Integer optionKey : order.keySet()) {
+            option = order.get(optionKey);
 
             if (option.equals("none") || option.equals("no")){
-                option = "no " + (ingredients[i]).toLowerCase();
+                option = "no " + (ingredients[optionKey]).toLowerCase();
             } else if (option.equals("yes")) {
-                option = (ingredients[i]).toLowerCase();
+                option = (ingredients[optionKey]).toLowerCase();
+            } else if (option.equals("all")){
+                option = "all " + (ingredients[optionKey]).toLowerCase();
+            } else if (option.equals("meat")){
+                option = option + " ";
             } else {
-                option = order.get(i) + " " + (ingredients[i]).toLowerCase();
+                option = order.get(optionKey) + " " + (ingredients[optionKey]).toLowerCase();
             }
 
             orderString += option;
-            if (i != order.size()-1)  orderString +=", ";
+            if (counter++ != order.size()-1)  orderString +=", ";
         }
         return orderString;
     }
