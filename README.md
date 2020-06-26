@@ -146,11 +146,13 @@ Pseudocode:
             return eachOrderPrices
         }
         
+        
+        
         // Display order with price
         void displayOrderWithPrice(order, eachOrderPrices) {
         
-            Display: 
-        
+            Access the order and prices and display them together.
+
         }
         
         
