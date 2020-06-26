@@ -88,17 +88,14 @@ public class BurritosOrder {
 
             randomNumberOfIngredients = MIN_NUMBER_OF_INGREDIENTS +
                     random.nextInt(5);
-            System.out.println("random Number Of Ingredients: " + randomNumberOfIngredients);
 
             alreadyUsedIngredients = new ArrayList<Integer>();
             ingredOptionHash = new HashMap<Integer, String>();
 
-            System.out.print("random Ingredients Option Idx: ");
             for (int ingredIdx = 0; ingredIdx < randomNumberOfIngredients; ingredIdx=alreadyUsedIngredients.size()) {
                 randomIngredientsOptionIdx = random.nextInt(ingredients.length);
 
                 if (!alreadyUsedIngredients.contains(randomIngredientsOptionIdx)) {
-                    System.out.print( randomIngredientsOptionIdx);
 
                     alreadyUsedIngredients.add(randomIngredientsOptionIdx);
                     // Like Rice
@@ -111,7 +108,6 @@ public class BurritosOrder {
                     ingredOptionHash.put(randomIngredientsOptionIdx, ingredOption);
                 }
             }
-            System.out.println();
 
             sortedOrderIngredOpt = sortOrder(ingredOptionHash);
 
@@ -171,7 +167,6 @@ public class BurritosOrder {
         String orderString;
 
         NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
-        System.out.println("Displaying Random order: ");
 
         for (int eachOrderIdx = 0; eachOrderIdx < orders.size(); eachOrderIdx++) {
 
@@ -201,8 +196,8 @@ public class BurritosOrder {
                 option = (ingredients[optionKey]).toLowerCase();
             } else if (option.equals("all")){
                 option = "all " + (ingredients[optionKey]).toLowerCase();
-            } else if (option.equals("meat")){
-                option = option + " ";
+            } else if (optionKey == 1 || optionKey == 4){
+                option = order.get(optionKey);
             } else {
                 option = order.get(optionKey) + " " + (ingredients[optionKey]).toLowerCase();
             }
